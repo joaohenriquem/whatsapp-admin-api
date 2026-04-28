@@ -30,6 +30,23 @@ API_KEY=sua_api_key
 PORT=3000
 ```
 
+## Deploy no Render
+
+1. Acesse [render.com](https://render.com) e faça login
+2. Clique em **New** → **Web Service**
+3. Conecte o repositório GitHub `whatsapp-admin-api`
+4. O Render detecta o `render.yaml` automaticamente. Confirme as configurações:
+   - **Build Command:** `npm install && npm run build`
+   - **Start Command:** `node dist/index.js`
+5. Na aba **Environment**, adicione as variáveis secretas:
+   - `DATABASE_URL` → connection string do PostgreSQL (Supabase)
+   - `JWT_SECRET` → chave secreta para geração de tokens JWT
+   - `API_KEY` → chave de autenticação usada pelo webhook do n8n
+6. Clique em **Create Web Service** e aguarde o deploy
+7. Teste acessando `https://seu-app.onrender.com/api/health`
+
+> **Nota:** No plano gratuito do Render, o serviço entra em suspensão após 15 min de inatividade. A primeira requisição após a suspensão pode levar alguns segundos a mais.
+
 ## Endpoints
 
 | Rota | Auth | Descrição |
