@@ -159,18 +159,43 @@ No seu fluxo do n8n, adicione um node **HTTP Request** com a seguinte configura�
 
 #### 2. Body da requisição
 
-O body deve conter os dados da mensagem no formato JSON:
+O body deve conter os dados da mensagem no formato JSON.
+
+**WhatsApp → Slack (mapeamento do WhatsApp Trigger):**
 
 ```json
 {
   "direction": "whatsapp_to_slack",
-  "sender_phone": "+5511999990001",
-  "sender_name": "Nome do Contato",
-  "message_text": "Conteúdo da mensagem",
-  "slack_user": "U001",
-  "slack_channel": "#suporte",
+  "sender_phone": "{{ $json.messages[0].from }}",
+  "sender_name": "{{ $json.contacts[0].profile.name }}",
+  "message_text": "{{ $json.messages[0].text.body }}",
   "status": "sent",
-  "whatsapp_message_id": "wamid.xxx",
+  "whatsapp_message_id": "{{ $json.messages[0].id }}",
+  "n8n_execution_id": "{{ $execution.id }}"
+}
+```
+
+Mapeamento dos campos do WhatsApp Trigger:
+
+| Campo API | Expressão n8n | Exemplo |
+|---|---|---|
+| `sender_phone` | `{{ $json.messages[0].from }}` | `5511995132636` |
+| `sender_name` | `{{ $json.contacts[0].profile.name }}` | `João Henrique` |
+| `message_text` | `{{ $json.messages[0].text.body }}` | `Olá` |
+| `whatsapp_message_id` | `{{ $json.messages[0].id }}` | `wamid.HBgNNTU...` |
+| `n8n_execution_id` | `{{ $execution.id }}` | ID da execução atual |
+
+**Slack → WhatsApp:**
+
+```json
+{
+  "direction": "slack_to_whatsapp",
+  "sender_phone": "+5511999990001",
+  "sender_name": "Nome do atendente",
+  "message_text": "Texto da resposta",
+  "slack_user": "{{ $json.user }}",
+  "slack_channel": "{{ $json.channel }}",
+  "status": "sent",
   "n8n_execution_id": "{{ $execution.id }}"
 }
 ```
