@@ -185,20 +185,30 @@ Mapeamento dos campos do WhatsApp Trigger:
 | `whatsapp_message_id` | `{{ $json.messages[0].id }}` | `wamid.HBgNNTU...` |
 | `n8n_execution_id` | `{{ $execution.id }}` | ID da execução atual |
 
-**Slack → WhatsApp:**
+**Slack → WhatsApp (mapeamento do Slack Trigger):**
 
 ```json
 {
   "direction": "slack_to_whatsapp",
   "sender_phone": "+5511999990001",
-  "sender_name": "Nome do atendente",
-  "message_text": "Texto da resposta",
+  "message_text": "{{ $json.text }}",
   "slack_user": "{{ $json.user }}",
   "slack_channel": "{{ $json.channel }}",
   "status": "sent",
   "n8n_execution_id": "{{ $execution.id }}"
 }
 ```
+
+Mapeamento dos campos do Slack Trigger:
+
+| Campo API | Expressão n8n | Exemplo |
+|---|---|---|
+| `message_text` | `{{ $json.text }}` | `olá` |
+| `slack_user` | `{{ $json.user }}` | `U0AUKQHAU22` |
+| `slack_channel` | `{{ $json.channel }}` | `C0AV79SABHP` |
+| `n8n_execution_id` | `{{ $execution.id }}` | ID da execução atual |
+
+> **Nota:** O `sender_phone` deve ser preenchido com o telefone do destinatário no WhatsApp. Você pode obtê-lo de um node anterior no fluxo (ex: busca no banco ou variável do contexto da conversa).
 
 #### 3. Campos obrigatórios e opcionais
 
