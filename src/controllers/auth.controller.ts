@@ -13,13 +13,18 @@ export class AuthController {
       return;
     }
 
-    const result = await authService.login(parsed.data.email, parsed.data.password);
+    try {
+      const result = await authService.login(parsed.data.email, parsed.data.password);
 
-    if (!result) {
-      res.status(401).json({ error: 'Credenciais inválidas' });
-      return;
+      if (!result) {
+        res.status(401).json({ error: 'Credenciais inválidas' });
+        return;
+      }
+
+      res.json(result);
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
     }
-
-    res.json(result);
   }
 }
