@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Direction {
+  whatsapp_to_slack
+  slack_to_whatsapp
+}
+
+enum MessageStatus {
+  sent
+  delivered
+  read
+  failed
+  pending
+}
+
+enum UserRole {
+  admin
+  viewer
+}
+
+model Message {
+  id                  String        @id @default(uuid()) @db.Uuid
+  direction           Direction
+  sender_phone        String
+  sender_name         String?
+  message_text        String
+  slack_user          String?
+  slack_channel       String?
+  status              MessageStatus
+  whatsapp_message_id String?
+  n8n_execution_id    String?
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+
+  @@index([created_at])
+  @@index([direction])
+  @@index([status])
+  @@index([sender_phone])
+  @@map("messages")
+}
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique
+  name          String
+  password_hash String
+  role          UserRole @default(viewer)
+  created_at    DateTime @default(now())
+
+  @@map("users")
+}
